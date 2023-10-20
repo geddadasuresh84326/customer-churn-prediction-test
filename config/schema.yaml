@@ -1,7 +1,5 @@
 columns:
   - Churn: int
-  - CustomerID: int
-  - Name: category
   - Age: int
   - Gender: category
   - Location: category
@@ -10,7 +8,7 @@ columns:
   - Total_Usage_GB: int
 
 numerical_columns:
-  - CustomerID
+  - Churn
   - Age
   - Subscription_Length_Months
   - Monthly_Bill

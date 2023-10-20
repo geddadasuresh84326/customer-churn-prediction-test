@@ -2,6 +2,8 @@ from-root
 pandas
 openpyxl
 scikit-learn
+PyYAML
+scipy
 dill==0.3.5.1
 dnspython==2.2.1
 evidently==0.1.58.dev0
@@ -19,5 +21,4 @@ websockets==10.3
 wincertstore==0.2
 xgboost==1.6.2
 neuro-mf==0.0.5
-PyYAML
 -e .

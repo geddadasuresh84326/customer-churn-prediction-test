@@ -3,7 +3,7 @@ from churn.constant.s3_bucket import TRAINING_BUCKET_NAME
 
 SAVED_MODEL_DIR =os.path.join("saved_models")
 # defining common constant variable for training pipeline
-TARGET_COLUMN = "class"
+TARGET_COLUMN = "Churn"
 PIPELINE_NAME: str = "sensor"
 ARTIFACT_DIR: str = "artifact"
 FILE_NAME: str = "customer_churn_large_dataset.csv"
