@@ -1,8 +1,9 @@
-from churn.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig,DataValidationConfig,DataTransformationConfig
-from churn.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact
+from churn.entity.config_entity import TrainingPipelineConfig,DataIngestionConfig,DataValidationConfig,DataTransformationConfig,ModelTrainerConfig
+from churn.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact,ModelTrainerArtifact
 from churn.components.data_ingestion import DataIngestion
 from churn.components.data_validation import DataValidation
 from churn.components.data_transformation import DataTransformation
+from churn.components.model_trainer import ModelTrainer
 from churn.exception import ChurnException
 from churn.logger import logging
 import os,sys
@@ -45,9 +46,11 @@ class TrainPipeline:
         except Exception as e:
             raise ChurnException(e,sys)
         
-    def start_model_trainer(self):
+    def start_model_trainer(self,data_transformation_artifact:DataTransformationArtifact):
         try:
-            pass
+            model_trainer_config = ModelTrainerConfig(training_pipeline_config=self.training_pipeline_config)
+            model_trainer = ModelTrainer(data_transformation_artifact=data_transformation_artifact,model_trainer_config=model_trainer_config)
+            model_trainer_artifact = model_trainer.initiate_model_trainer()
         except Exception as e:
             raise ChurnException(e,sys)
         
@@ -68,6 +71,6 @@ class TrainPipeline:
             data_ingestion_artifact:DataIngestionArtifact =self.start_data_ingestion()
             data_validation_artifact = self.start_data_validaton(data_ingestion_artifact=data_ingestion_artifact)
             data_transformation_artifact = self.start_data_transformation(data_validation_artifact=data_validation_artifact)
-
+            model_trainer_artifact = self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
         except Exception as e:
             raise ChurnException(e,sys)

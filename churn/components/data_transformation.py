@@ -69,7 +69,7 @@ class DataTransformation:
         for feature in cat_columns:
             dummies = pd.get_dummies(dataframe[feature])
             print(dummies.head(2))
-            dataframe = pd.concat([dataframe,dummies],axis = 1)
+            dataframe = pd.concat([dummies,dataframe],axis = 1)
             dataframe.drop(feature,axis= 1,inplace= True)
         return dataframe
     def initiate_data_transformation(self,) -> DataTransformationArtifact:
