@@ -86,6 +86,8 @@ class TrainPipeline:
             data_transformation_artifact = self.start_data_transformation(data_validation_artifact=data_validation_artifact)
             model_trainer_artifact = self.start_model_trainer(data_transformation_artifact=data_transformation_artifact)
             model_evaluation_artifact = self.start_model_evaluation(model_trainer_artifact=model_trainer_artifact,data_validation_artifact=data_validation_artifact)
+            if not model_evaluation_artifact.is_model_accepted:
+                raise Exception("trained model is not better than the best model")
             model_pusher_artifact = self.start_model_pusher(model_eval_artifact=model_evaluation_artifact)
         except Exception as e:
             raise ChurnException(e,sys)
