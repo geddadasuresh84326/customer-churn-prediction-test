@@ -9,7 +9,6 @@ from churn.ml.model.estimator import CustomerModel
 from churn.utils.main_utils import save_object,load_object,write_yaml_file
 from churn.ml.model.estimator import ModelResolver
 from churn.constant.training_pipeline import TARGET_COLUMN
-from churn.ml.model.estimator import TargetValueMapping
 import pandas  as  pd
 
 class ModelEvaluation:
@@ -32,14 +31,13 @@ class ModelEvaluation:
         try:
             valid_train_file_path = self.data_validation_artifact.valid_train_file_path
             valid_test_file_path = self.data_validation_artifact.valid_test_file_path
-
+            
             #valid train and test file dataframe
             train_df = pd.read_csv(valid_train_file_path)
             test_df = pd.read_csv(valid_test_file_path)
 
             df = pd.concat([train_df,test_df])
             y_true = df[TARGET_COLUMN]
-            y_true.replace(TargetValueMapping().to_dict(),inplace=True)
             df.drop(TARGET_COLUMN,axis=1,inplace=True)
 
             train_model_file_path = self.model_trainer_artifact.trained_model_file_path
