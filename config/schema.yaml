@@ -6,6 +6,7 @@ columns:
   - Subscription_Length_Months: int
   - Monthly_Bill: int
   - Total_Usage_GB: int
+  
 
 numerical_columns:
   - Churn

@@ -10,6 +10,7 @@ from churn.utils.main_utils import save_object,load_object,write_yaml_file
 from churn.ml.model.estimator import ModelResolver
 from churn.constant.training_pipeline import TARGET_COLUMN
 import pandas  as  pd
+from churn.components.data_transformation import DataTransformation
 
 class ModelEvaluation:
 
@@ -26,7 +27,16 @@ class ModelEvaluation:
             raise ChurnException(e,sys)
     
 
-
+    def label_encoding(cls,dataframe:pd.DataFrame)->pd.DataFrame:
+        cat_columns = [feature for feature in dataframe.columns if dataframe[feature].dtype == "O"]
+        logging.info(f"categorical_columns : {cat_columns}")
+        for feature in cat_columns:
+            dummies = pd.get_dummies(dataframe[feature])
+            print(dummies.head(2))
+            dataframe = pd.concat([dummies,dataframe],axis = 1)
+            dataframe.drop(feature,axis= 1,inplace= True)
+        return dataframe
+    
     def initiate_model_evaluation(self)->ModelEvaluationArtifact:
         try:
             valid_train_file_path = self.data_validation_artifact.valid_train_file_path
@@ -39,6 +49,9 @@ class ModelEvaluation:
             df = pd.concat([train_df,test_df])
             y_true = df[TARGET_COLUMN]
             df.drop(TARGET_COLUMN,axis=1,inplace=True)
+
+            # label encoding 
+            df = DataTransformation.label_encoding(dataframe=df)
 
             train_model_file_path = self.model_trainer_artifact.trained_model_file_path
             model_resolver = ModelResolver()
@@ -59,6 +72,7 @@ class ModelEvaluation:
             latest_model_path = model_resolver.get_best_model_path()
             latest_model = load_object(file_path=latest_model_path)
             train_model = load_object(file_path=train_model_file_path)
+            
             
             y_trained_pred = train_model.predict(df)
             y_latest_pred  =latest_model.predict(df)

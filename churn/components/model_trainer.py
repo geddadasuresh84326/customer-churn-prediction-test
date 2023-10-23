@@ -62,7 +62,6 @@ class ModelTrainer:
             
             # if diff>self.model_trainer_config.overfitting_underfitting_threshold:
             #     raise Exception("Model is not good try to do more experimentation.")
-
             preprocessor = load_object(file_path=self.data_transformation_artifact.transformed_object_file_path)
             
             model_dir_path = os.path.dirname(self.model_trainer_config.trained_model_file_path)

@@ -13,6 +13,8 @@ class DataIngestion:
 
     def __init__(self,data_ingestion_config:DataIngestionConfig):
         try:
+            logging.info(f"{'>>'*10} Data Ingestion {'<<'*10}")
+
             self.data_ingestion_config=data_ingestion_config
             self._schema_config = read_yaml_file(SCHEMA_FILE_PATH)
         except Exception as e:
@@ -43,8 +45,9 @@ class DataIngestion:
         """
 
         try:
+
             train_set, test_set = train_test_split(
-                dataframe, test_size=self.data_ingestion_config.train_test_split_ratio
+                dataframe, test_size=self.data_ingestion_config.train_test_split_ratio,random_state=42
             )
 
             logging.info("Performed train test split on the dataframe")
@@ -75,11 +78,14 @@ class DataIngestion:
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
+            logging.info("initiated data ingestion process")
             dataframe = self.export_data_into_feature_store()
             dataframe = dataframe.drop(self._schema_config["drop_columns"],axis=1)
+            logging.info(f"dataframe columns inside data ingestion : {dataframe.columns}")
             self.split_data_as_train_test(dataframe=dataframe)
             data_ingestion_artifact = DataIngestionArtifact(trained_file_path=self.data_ingestion_config.training_file_path,
             test_file_path=self.data_ingestion_config.testing_file_path)
+            logging.info("data ingestion completed")
             return data_ingestion_artifact
         except Exception as e:
             raise ChurnException(e,sys)
